@@ -36,3 +36,22 @@
     transform: rotate(360deg);
   }
 }
+
+.cell {
+  width: 10px;
+  height: 10px;
+  background: rgb(189, 187, 187);
+  border: 1px solid black;
+}
+
+.alive {
+  background: red;
+}
+
+.matrix {
+  border: 1px solid red;
+}
+
+.matrixA {
+  border: 3px solid purple;
+}

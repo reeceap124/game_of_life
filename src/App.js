@@ -9,21 +9,26 @@ function App() {
     setUserInput(e.target.value)
   }
 
-  function row(){
+  function row(x, m){
     let i = 0
+    let arr = []
     for (i; i < userInput; i++) {
-      return <Cell/>
+      arr.push(<Cell x={x} y={i} alternate={m}/>)
     }
   }
 
-  function matrix() {
+  function matrix(m) {
     let i = 0
-    for (i; i < userInput; i++) {<div>{row()}</div>}
+    for (i; i < userInput; i++) {row(i, m)}
   }
+  let matrixB
+  let matrixA = matrix(userInput, matrixB)
+  matrixB = matrix(userInput, matrixA)
   return (
     <div className="App">
       <label onChange={handleChange}>Size<input type="number"/></label>
-      {matrix()}
+      <div className='matrix matrixA'>{matrixA}</div>
+      <div className='matrix matrixB'>{matrixB}</div>
     </div>
   );
 }
