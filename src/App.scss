@@ -37,16 +37,25 @@
   }
 }
 
-.cell {
-  width: 10px;
-  height: 10px;
-  background: rgb(189, 187, 187);
-  border: 1px solid black;
-}
+  span {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin: 0.1%;
+    border: 1px solid black;
+    background: purple;
+  }
+  .dead {
+  background: yellow;
+  }
+  .alive {
+    background: blue;
 
-.alive {
-  background: red;
-}
+  }
+
+
+
+
 
 .matrix {
   border: 1px solid red;
@@ -54,4 +63,6 @@
 
 .matrixA {
   border: 3px solid purple;
+  padding: 1%;
+  margin: 1%;
 }
