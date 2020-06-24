@@ -1,90 +1,124 @@
-// import React, {useState} from 'react';
-// import './App.css';
-// import Cell from './components/Cell'
+// import React, {useState, useEffect, useRef, useCallback} from 'react';
+// import './App.scss';
 
 // function App() {
-//   const [userInput, setUserInput] = useState(3)
+//   const [userInput, setUserInput] = useState(25)
 //   const [running, setRunning] = useState(false)
-//   function handleChange(e) {
-//     e.preventDefault();
-//     setUserInput(e.target.value)
-//   }
-
-//   function callCounter(){
-//     let i = 1
-//     function increaseI () {
-//       const times = i
-//       i++
-//       return times
+//   const [grid, setGrid] = useState(()=>{
+//     let rows = []
+//     for(let i = 0; i < userInput; i++) {
+//       rows[i] = []
+//       for(let j = 0; j < userInput; j++) {
+//         rows[i][j] = false
+//       }
 //     }
-//     return increaseI
-//   }
+//     return rows
+//   })
+//   const runningRef = useRef(running)
+//   runningRef.current = running
 
-//   function row(x, alt){
-//     let j = 0
-//     let arr = []
-//     for (j; j < userInput; j++) {
-//       if (alt = null) {
-//         arr.push(
-//           <span className='cell'>nell</span>
-//         )
-//       } else {
-//         arr.push(
-//           <Cell x={x} y={j} alternate={alt}/>
-//         )
+//   const runGame = useCallback(()=>{
+//     if (!runningRef.current) {
+//       console.log('stopped running')
+//       return
+//     }
+//     console.log('running')
+//     const getNeighbors = (arr, x, y) => {
+//       const find = (val) => {
+//         if (val < 0) {
+//           //arr[(arr.length() - 1)]
+//           return (arr.length - 1)
+//         }
+//         else {
+//           //arr[0]
+//           return 0
+//         }
+//       }
+//       const neighbors = [
+//         arr[find((x-1))][find((y-1))],
+//         arr[find((x-1))][y],
+//         arr[find((x-1))][find((y+1))],
+//         arr[find(x)][find((y-1))],
+//         arr[find(x)][find((y+1))],
+//         arr[find((x+1))][find((y-1))],
+//         arr[find((x+1))][y],
+//         arr[find((x+1))][find((y+1))]
+//       ]
+//       const alive = () => {
+//         let counter = 0
+//         neighbors.forEach(n=>{
+//           if (n) {
+//             counter ++
+//           }
+//         })
+//         return counter
 //       }
       
+//       return {neighbors, alive} //not sure yet if I want return out neighbors array or not
 //     }
-//     return arr
-//   }
-
-//   function matrix(alt=null) {
-//     console.trace('matrix has been called at:')
-//     let i = 0
-//     let mat = []
-//     for (i; i < userInput; i++) {
-//       console.log(`in Matrix. Value is ${i}`)
-//       mat.push(
-//         <div>{row(i, alt)}</div>
-//       )
-      
-//       // row(i, m)
+//     const newGrid = JSON.parse(JSON.stringify(grid))
+//     for (let i = 0; i < userInput; i++){
+//       for (let j = 0; j < userInput; j++){
+//         let alive_counter = getNeighbors(grid, i, j).alive()
+//         if (newGrid[i][j]){
+//           if (alive_counter < 2 || alive_counter > 3) {
+//             newGrid[i][j] = false
+//           }
+//         } else {
+//           if (alive_counter === 3) {
+//             newGrid[i][j] = true
+//           }
+//         }
+//       }
 //     }
-//     return mat
-//   }
-//   let matrixB
-//   let matrixA = matrix(matrixB)
-//   matrixB =  matrix(matrixA)
+//     setGrid(newGrid)
+//     console.log('set new grid')
+//     setTimeout(runGame, 500)
+//   },[])
 
-//   // const [current, setCurrent] = useState({
-//   //   active: matrixA,
-//   //   next: matrixB
-//   // })
-
-//   // function swapCurrent() {
-//   //   let temp = current.active
-//   //   setCurrent({
-//   //     active: current.next,
-//   //     next: temp
-//   //   })
-
-//   // }
 //   function toggleStart(e){
 //     e.preventDefault()
-//     // setRunning(!running)
-//     return null
+//     setRunning(!running)
+//     if (!running){
+//       runningRef.current = true
+//       runGame()
+//     }
+    
 //   }
-//   // while (running) {
-//   //   setTimeout(swapCurrent(), 500)
-//   // }
+
+//   function handleChange(e) {
+//         e.preventDefault();
+//         setUserInput(e.target.value)
+//       }
+
+//   function handleCellToggle (x, y) {
+//     const toggle = () => {
+//       const clonedGrid = JSON.parse(JSON.stringify(grid)) //needed to deep copy the full nested obj
+//       clonedGrid[x][y] = !clonedGrid[x][y]
+//       return clonedGrid
+//     }
+//     setGrid(toggle())
+//   }
 
 //   return (
 //     <div className="App">
+//       <button onClick={toggleStart}>{running?'Stop':'Start'}</button>
 //       <label>Size<input type="number"onChange={handleChange} value={userInput}/></label>
-//   <button type='button' onClick={toggleStart}>{running?'Stop':'Start'}</button>
-//       <div className='matrix matrixA'>{matrixA}</div>
+//       {grid.map((row, i) => {
+//       return (
+//         <div key={`${i}`} className='row'>
+//         {row.map((col, j)=>{
+//           return  col = (<span key={`${i}${j}`} className={grid[i][j]?'alive':'dead'} onClick={(e)=>{
+//             e.preventDefault()
+//             handleCellToggle(i, j)
+//           }}></span>)
+//         })}
+//         </div>
+//       )
+      
+//       })}
 //     </div>
-//   );
+//   )
 // }
 
 // export default App;
