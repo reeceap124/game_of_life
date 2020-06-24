@@ -1,9 +1,8 @@
 import React, {useState, useEffect, useRef, useCallback} from 'react';
 import './App.scss';
-import useInterval from './components/useInterval'
 
-const totalrows = 25;
-const totalcol = 25;
+const totalrows = 15;
+const totalcol = 15;
 
 const newBoardStatus = (cellStatus = ()=> Math.random() < 0.3) => {
   const grid = []
@@ -22,7 +21,7 @@ const BoardGrid = ({boardStatus, onToggleCell}) => {
     let row = []
     for (let j = 0; j< totalcol; j++) {
       row.push(
-        <span className={boardStatus[i][j]?'alive':'dead'} onClick={()=>handleClick(i, j)}/>
+        <span className={boardStatus[i][j]?'alive':'dead'} onClick={handleClick(i, j)}/>
       )
     }
     board.push(<div>{row}</div>)
@@ -36,19 +35,16 @@ function App() {
     boardStatus: newBoardStatus(),
     generation: 0,
     isGameRunning: false,
-    speed: 250
+    speed: 500
   })
+
+  console.log('First Status', gameStatus.boardStatus)
 
   
 
   function clearBoard(e) {
     e.preventDefault()
-    setGameStatus({...gameStatus, boardStatus: newBoardStatus(()=>false), isGameRunning: false})
-  }
-
-  function newGame(e){
-    e.preventDefault()
-    setGameStatus({...gameStatus, boardStatus: newBoardStatus(), isGameRunning: false, generation: 0})
+    setGameStatus({...gameStatus, boardStatus: newBoardStatus(()=>false)})
   }
 
   function toggleCell(x, y){
@@ -61,6 +57,11 @@ function App() {
   }
 
   const runGame = () => {
+    if (!gameStatus.isGameRunning) {
+      console.log('Stopped running')
+      return
+    }
+    console.log('RUNNING', gameStatus)
     const trueNeighbors = (arr, x, y) => {
         const find = (val) => {
           if (val < 0) {
@@ -90,12 +91,17 @@ function App() {
               counter ++
             }
           })
-
+        
+        console.log('Counter', counter)
         return counter //not sure yet if I want return out neighbors array or not
       }
+
+    const nextStep = () => {
+
       const boardStatus = gameStatus.boardStatus
       const clonedBoardStatus = JSON.parse(JSON.stringify(boardStatus))
-    const nextStep = () => {
+
+      
       for(let i = 0; i < totalrows; i ++) {
         for (let j = 0; j < totalcol; j++) {
           const totalTrueN = trueNeighbors(boardStatus, i, j)
@@ -103,19 +109,16 @@ function App() {
             if (totalTrueN < 2 || totalTrueN > 3) {
               clonedBoardStatus[i][j] = false;
             }
-
           } else {
-            if (totalTrueN === 3) {
-              clonedBoardStatus[i][j] = true;
-            }
+            clonedBoardStatus[i][j] = true
           }
         }
       }
       return clonedBoardStatus
     }
-    const newbie = nextStep()
-    setGameStatus({...gameStatus, boardStatus: newbie, 
+    setGameStatus({...gameStatus, boardStatus: nextStep(), 
       generation: gameStatus.generation + 1})
+    console.log('end of round')
   }
 
 
@@ -126,17 +129,12 @@ function App() {
 
   //Methods
   
-  useInterval(()=>{
-    runGame()
-  }, gameStatus.isGameRunning?gameStatus.speed:null)
+
   
   return (
     <div className="App">
       <button onClick={toggleRun}>{gameStatus.isGameRunning?'Stop':'Start'}</button>
-      <button onClick={clearBoard}>Clear</button>
-      <button onClick={newGame}>New Game</button>
-      <p>{gameStatus.generation}</p>
-      <BoardGrid boardStatus={gameStatus.boardStatus} onToggleCell={toggleCell}/>
+      <BoardGrid boardStatus={gameStatus.boardStatus} onToggleCell={()=>null}/>
     </div>
   )
 }
