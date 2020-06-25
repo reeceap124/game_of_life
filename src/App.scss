@@ -46,23 +46,18 @@
     background: purple;
   }
   .dead {
-  background: yellow;
+  background: #264653;
   }
-  .alive {
-    background: blue;
-
+  .stageOne {
+    background: #2a9d8f;
   }
-
-
-
-
-
-.matrix {
-  border: 1px solid red;
-}
-
-.matrixA {
-  border: 3px solid purple;
-  padding: 1%;
-  margin: 1%;
-}
+  .stageTwo {
+    background: #e9c46a;
+  }
+  .stageThree {
+    background: #f4a261;
+  }
+  .stageFour {
+    background: #e76f51;
+  }
+  
