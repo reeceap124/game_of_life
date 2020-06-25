@@ -1,12 +1,13 @@
 import React, {useState, useEffect, useRef, useCallback} from 'react';
 import './App.scss';
 import useInterval from './components/useInterval'
-import Cell from './components/Cell'
+import Slider from './components/Slider'
 import BoardGrid from './components/Board'
+import trueNeighbors from './helpers/findNumTrue'
 
-const size = 25;
 
-const newBoardStatus = (cellStatus = ()=> {
+const initialSize = 25
+const newBoardStatus = (num = initialSize, cellStatus = ()=> {
   const cell = {
     status : Math.random() < 0.3,
     aliveCount: 0
@@ -15,20 +16,17 @@ const newBoardStatus = (cellStatus = ()=> {
   return cell
 }) => {
   const grid = []
-  for (let i = 0; i < size; i ++) {
+  for (let i = 0; i < num; i ++) {
     grid[i] = []
-    for(let j = 0; j < size; j++) {
+    for(let j = 0; j < num; j++) {
       grid[i][j] = cellStatus()
     }
   }
   return grid
 };
 
-
-
-const Slider = () => {};
-
 function App() {
+  const [size, setSize] = useState(initialSize)
   const [gameStatus, setGameStatus] = useState({
     boardStatus: newBoardStatus(),
     generation: 0,
@@ -36,11 +34,9 @@ function App() {
     speed: 125
   })
 
-  
-
   function clearBoard(e) {
     e.preventDefault()
-    setGameStatus({...gameStatus, boardStatus: newBoardStatus(()=>{
+    setGameStatus({...gameStatus, boardStatus: newBoardStatus(size,()=>{
       const cell = {
         status : false,
         aliveCount: 0
@@ -51,54 +47,14 @@ function App() {
 
   function newGame(e){
     e.preventDefault()
-    setGameStatus({...gameStatus, boardStatus: newBoardStatus(), isGameRunning: false, generation: 0})
+    setGameStatus({...gameStatus, boardStatus: newBoardStatus(size), isGameRunning: false, generation: 0})
   }
 
-  function toggleCell(x, y){
-    const toggleBoardStatus = () => {
-      const clonedBoard = JSON.parse(JSON.stringify(gameStatus.boardStatus))
-      clonedBoard[x][y].status = !clonedBoard[x][y].status;
-      return clonedBoard
-    }
-    setGameStatus({...gameStatus, boardStatus: toggleBoardStatus()})
-  }
 
   const runGame = () => {
-    const trueNeighbors = (arr, x, y) => {
-        const find = (val) => {
-          if (val < 0) {
-            return (arr.length - 1)
-          }
-          else if (val > arr.length - 1){
-            return 0
-          }
-          else {
-            return val
-          }
-        }
-        const neighbors = [
-          arr[find((x-1))][find((y-1))],
-          arr[find((x-1))][y],
-          arr[find((x-1))][find((y+1))],
-          arr[find(x)][find((y-1))],
-          arr[find(x)][find((y+1))],
-          arr[find((x+1))][find((y-1))],
-          arr[find((x+1))][y],
-          arr[find((x+1))][find((y+1))]
-        ]
-        
-          let counter = 0
-          neighbors.forEach(n=>{
-            if (n.status) {
-              counter ++
-            }
-          })
-
-        return counter //not sure yet if I want return out neighbors array or not
-      }
-      const boardStatus = gameStatus.boardStatus
-      const clonedBoardStatus = JSON.parse(JSON.stringify(boardStatus))
-      let changed = false
+    const boardStatus = gameStatus.boardStatus
+    const clonedBoardStatus = JSON.parse(JSON.stringify(boardStatus))
+    let changed = false
     const nextStep = () => {
       for(let i = 0; i < size; i ++) {
         for (let j = 0; j < size; j++) {
@@ -131,13 +87,13 @@ function App() {
     }
     
   }
-
-
   function toggleRun(e){
     e.preventDefault()
     setGameStatus({...gameStatus, isGameRunning: !gameStatus.isGameRunning})
   }
-  
+  function changeSpeed(newSpeed) {
+    setGameStatus({...gameStatus, speed: newSpeed})
+  }
   useInterval(()=>{
     runGame()
   }, gameStatus.isGameRunning?gameStatus.speed:null)
@@ -147,9 +103,9 @@ function App() {
       <button onClick={toggleRun}>{gameStatus.isGameRunning?'Stop':'Start'}</button>
       <button onClick={clearBoard}>Clear</button>
       <button onClick={newGame}>New Game</button>
-      <label>Next Step<input type='number' name='speed' value={gameStatus.speed}/>ms</label>
+      <label>Step time<Slider speed={gameStatus.speed} onSpeedChange={changeSpeed}/>{gameStatus.speed}ms</label>
       <p>{gameStatus.generation}</p>
-      <BoardGrid boardStatus={gameStatus.boardStatus} onToggleCell={toggleCell} isGameRunning={gameStatus.isGameRunning} size={size}/>
+      <BoardGrid gameStatus={gameStatus} setGameStatus={setGameStatus} size={size}/>
     </div>
   )
 }
