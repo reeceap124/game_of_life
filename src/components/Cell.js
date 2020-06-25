@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Cell = ({cell}) => {
+const Cell = ({cell, click, i , j}) => {
   
   
     let stage = 'stageOne'
@@ -12,7 +12,7 @@ const Cell = ({cell}) => {
       stage = 'stageFour'
     }
     return (
-      <span className={`${cell.status?stage:'dead'}`}/>
+      <span className={`${cell.status?stage:'dead'}`} onClick={()=>click(i, j)}/>
     )
     
   
