@@ -10,6 +10,8 @@ const Cell = ({cell, click, i , j}) => {
       stage = 'stageThree'
     } else if (cell.aliveCount >= 25 && cell.aliveCount < 50) {
       stage = 'stageFour'
+    } else if (cell.aliveCount >= 50) {
+      stage = 'stageFive'
     }
     return (
       <span className={`${cell.status?stage:'dead'}`} onClick={()=>click(i, j)}/>
