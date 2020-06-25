@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef, useCallback} from 'react';
+import React, {useState} from 'react';
 import './App.scss';
 import useInterval from './customHooks/useInterval'
 import Slider from './components/Slider'
