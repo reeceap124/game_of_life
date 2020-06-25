@@ -14,7 +14,7 @@ const Cell = ({cell, click, i , j}) => {
       stage = 'stageFive'
     }
     return (
-      <span className={`${cell.status?stage:'dead'}`} onClick={()=>click(i, j)}/>
+      <div className={`cell ${cell.status?stage:'dead'}`} onClick={()=>click(i, j)}/>
     )
     
   

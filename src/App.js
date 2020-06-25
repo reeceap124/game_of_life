@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef, useCallback} from 'react';
 import './App.scss';
-import useInterval from './components/useInterval'
+import useInterval from './customHooks/useInterval'
 import Slider from './components/Slider'
 import BoardGrid from './components/Board'
 import trueNeighbors from './helpers/findNumTrue'
@@ -44,14 +44,30 @@ function App() {
   
   return (
     <div className="App">
-      <div>
-        <button onClick={toggleRun}>{gameStatus.isGameRunning?'Stop':'Start'}</button>
-        <button onClick={clearBoard}>Clear</button>
-        <button onClick={newGame}>New Game</button>
-        <label>Step time<Slider speed={gameStatus.speed} onSpeedChange={changeSpeed}/>{gameStatus.speed}ms</label>
-        <p>{gameStatus.generation}</p>
+      <div className='matrix'>
+        <div className='controls'>
+          <div>
+            <button onClick={toggleRun}>{gameStatus.isGameRunning?'Stop':'Start'}</button>
+            <button onClick={clearBoard}>Clear</button>
+            <button onClick={newGame}>New Game</button>
+          </div>
+          
+          <label>Step time<Slider speed={gameStatus.speed} onSpeedChange={changeSpeed}/>{gameStatus.speed}ms</label>
+          <p>Generation: {gameStatus.generation}</p>
+        </div>
+        
         <BoardGrid gameStatus={gameStatus} setGameStatus={setGameStatus} size={size}/>
       </div>
+      <div className='rules'>
+        <h1>Rules of the Game</h1>
+        <ol>
+          <li>Any cell with fewer than two live neighbors dies (as if by isolation)</li>
+          <li>Any cell with two or three living neighbors survives to the next generation</li>
+          <li>Any cell with four or more neighbors dies (as if by over population)</li>
+        </ol>
+      </div>
+      
+      
       
     </div>
   )
