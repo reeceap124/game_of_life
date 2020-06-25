@@ -1,34 +1,31 @@
 import React, {useState, useEffect, useRef, useCallback} from 'react';
 import './App.scss';
 import useInterval from './components/useInterval'
+import Cell from './components/Cell'
+import BoardGrid from './components/Board'
 
-const totalrows = 25;
-const totalcol = 25;
+const size = 25;
 
-const newBoardStatus = (cellStatus = ()=> Math.random() < 0.3) => {
+const newBoardStatus = (cellStatus = ()=> {
+  const cell = {
+    status : Math.random() < 0.3,
+    aliveCount: 0
+  }
+  if (cell.status){cell.aliveCount = 1}
+  return cell
+}) => {
   const grid = []
-  for (let i = 0; i < totalrows; i ++) {
+  for (let i = 0; i < size; i ++) {
     grid[i] = []
-    for(let j = 0; j < totalcol; j++) {
+    for(let j = 0; j < size; j++) {
       grid[i][j] = cellStatus()
     }
   }
   return grid
 };
-const BoardGrid = ({boardStatus, onToggleCell, isGameRunning}) => {
-  const handleClick = (x, y) => onToggleCell(x,y)
-  const board = []
-  for (let i = 0; i < totalrows; i++) {
-    let row = []
-    for (let j = 0; j< totalcol; j++) {
-      row.push(
-        <span className={boardStatus[i][j]?'alive':'dead'} onClick={isGameRunning?null:()=>handleClick(i, j)}/>
-      )
-    }
-    board.push(<div>{row}</div>)
-  }
-  return board
-};
+
+
+
 const Slider = () => {};
 
 function App() {
@@ -36,14 +33,20 @@ function App() {
     boardStatus: newBoardStatus(),
     generation: 0,
     isGameRunning: false,
-    speed: 250
+    speed: 125
   })
 
   
 
   function clearBoard(e) {
     e.preventDefault()
-    setGameStatus({...gameStatus, boardStatus: newBoardStatus(()=>false), isGameRunning: false, generation: 0})
+    setGameStatus({...gameStatus, boardStatus: newBoardStatus(()=>{
+      const cell = {
+        status : false,
+        aliveCount: 0
+      }
+      return cell
+    }), isGameRunning: false, generation: 0})
   }
 
   function newGame(e){
@@ -54,7 +57,7 @@ function App() {
   function toggleCell(x, y){
     const toggleBoardStatus = () => {
       const clonedBoard = JSON.parse(JSON.stringify(gameStatus.boardStatus))
-      clonedBoard[x][y] = !clonedBoard[x][y];
+      clonedBoard[x][y].status = !clonedBoard[x][y].status;
       return clonedBoard
     }
     setGameStatus({...gameStatus, boardStatus: toggleBoardStatus()})
@@ -86,7 +89,7 @@ function App() {
         
           let counter = 0
           neighbors.forEach(n=>{
-            if (n) {
+            if (n.status) {
               counter ++
             }
           })
@@ -95,18 +98,23 @@ function App() {
       }
       const boardStatus = gameStatus.boardStatus
       const clonedBoardStatus = JSON.parse(JSON.stringify(boardStatus))
+      let changed = false
     const nextStep = () => {
-      for(let i = 0; i < totalrows; i ++) {
-        for (let j = 0; j < totalcol; j++) {
+      for(let i = 0; i < size; i ++) {
+        for (let j = 0; j < size; j++) {
           const totalTrueN = trueNeighbors(boardStatus, i, j)
-          if (boardStatus[i][j]) {
+          if (boardStatus[i][j].status) {
             if (totalTrueN < 2 || totalTrueN > 3) {
-              clonedBoardStatus[i][j] = false;
+              clonedBoardStatus[i][j] = {...clonedBoardStatus[i][j], status: false, aliveCount: 0};
+              changed = true
+            } else {
+              clonedBoardStatus[i][j] = {...clonedBoardStatus[i][j], aliveCount: clonedBoardStatus[i][j].aliveCount + 1};
             }
 
           } else {
             if (totalTrueN === 3) {
-              clonedBoardStatus[i][j] = true;
+              clonedBoardStatus[i][j] = {...clonedBoardStatus[i][j], status: true, aliveCount: 1};
+              changed = true
             }
           }
         }
@@ -114,8 +122,14 @@ function App() {
       return clonedBoardStatus
     }
     const newbie = nextStep()
-    setGameStatus({...gameStatus, boardStatus: newbie, 
+    if (changed == false){
+      setGameStatus({...gameStatus, isGameRunning: false})
+    } else {
+
+      setGameStatus({...gameStatus, boardStatus: newbie, 
       generation: gameStatus.generation + 1})
+    }
+    
   }
 
 
@@ -133,8 +147,9 @@ function App() {
       <button onClick={toggleRun}>{gameStatus.isGameRunning?'Stop':'Start'}</button>
       <button onClick={clearBoard}>Clear</button>
       <button onClick={newGame}>New Game</button>
+      <label>Next Step<input type='number' name='speed' value={gameStatus.speed}/>ms</label>
       <p>{gameStatus.generation}</p>
-      <BoardGrid boardStatus={gameStatus.boardStatus} onToggleCell={toggleCell} isGameRunning={gameStatus.isGameRunning}/>
+      <BoardGrid boardStatus={gameStatus.boardStatus} onToggleCell={toggleCell} isGameRunning={gameStatus.isGameRunning} size={size}/>
     </div>
   )
 }
