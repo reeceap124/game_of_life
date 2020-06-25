@@ -15,14 +15,14 @@ const newBoardStatus = (cellStatus = ()=> Math.random() < 0.3) => {
   }
   return grid
 };
-const BoardGrid = ({boardStatus, onToggleCell}) => {
+const BoardGrid = ({boardStatus, onToggleCell, isGameRunning}) => {
   const handleClick = (x, y) => onToggleCell(x,y)
   const board = []
   for (let i = 0; i < totalrows; i++) {
     let row = []
     for (let j = 0; j< totalcol; j++) {
       row.push(
-        <span className={boardStatus[i][j]?'alive':'dead'} onClick={()=>handleClick(i, j)}/>
+        <span className={boardStatus[i][j]?'alive':'dead'} onClick={isGameRunning?null:()=>handleClick(i, j)}/>
       )
     }
     board.push(<div>{row}</div>)
@@ -43,7 +43,7 @@ function App() {
 
   function clearBoard(e) {
     e.preventDefault()
-    setGameStatus({...gameStatus, boardStatus: newBoardStatus(()=>false), isGameRunning: false})
+    setGameStatus({...gameStatus, boardStatus: newBoardStatus(()=>false), isGameRunning: false, generation: 0})
   }
 
   function newGame(e){
@@ -123,8 +123,6 @@ function App() {
     e.preventDefault()
     setGameStatus({...gameStatus, isGameRunning: !gameStatus.isGameRunning})
   }
-
-  //Methods
   
   useInterval(()=>{
     runGame()
@@ -136,7 +134,7 @@ function App() {
       <button onClick={clearBoard}>Clear</button>
       <button onClick={newGame}>New Game</button>
       <p>{gameStatus.generation}</p>
-      <BoardGrid boardStatus={gameStatus.boardStatus} onToggleCell={toggleCell}/>
+      <BoardGrid boardStatus={gameStatus.boardStatus} onToggleCell={toggleCell} isGameRunning={gameStatus.isGameRunning}/>
     </div>
   )
 }
