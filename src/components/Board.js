@@ -24,9 +24,9 @@ const BoardGrid = ({gameStatus, setGameStatus, size}) => {
           <Cell cell={gameStatus.boardStatus[i][j]} click={handleClick} i={i} j={j}/>
         )
       }
-      board.push(<div>{row}</div>)
+      board.push(<div className='row'>{row}</div>)
     }
-    return board
+    return <div className='board'>{board}</div>
   };
 
 export default BoardGrid
