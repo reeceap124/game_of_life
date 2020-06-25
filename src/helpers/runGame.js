@@ -26,7 +26,7 @@ const runGame = (gameStatus, setGameStatus, size) => {
       return clonedBoardStatus
     }
     const newbie = nextStep()
-    if (changed == false){
+    if (changed === false){
       setGameStatus({...gameStatus, isGameRunning: false})
     } else {
 
