@@ -21,10 +21,10 @@ const BoardGrid = ({gameStatus, setGameStatus, size}) => {
       let row = []
       for (let j = 0; j< size; j++) {
         row.push(
-          <Cell cell={gameStatus.boardStatus[i][j]} click={handleClick} i={i} j={j}/>
+          <Cell key={`c${i}${j}`} cell={gameStatus.boardStatus[i][j]} click={handleClick} i={i} j={j}/>
         )
       }
-      board.push(<div className='row'>{row}</div>)
+      board.push(<div key={`r${i}`} className='row'>{row}</div>)
     }
     return <div className='board'>{board}</div>
   };
