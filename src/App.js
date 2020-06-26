@@ -3,7 +3,6 @@ import './App.scss';
 import useInterval from './customHooks/useInterval'
 import Slider from './components/Slider'
 import BoardGrid from './components/Board'
-import trueNeighbors from './helpers/findNumTrue'
 import newBoardStatus from './helpers/newBoardStatus'
 import runGame from './helpers/runGame'
 
