@@ -72,9 +72,9 @@ function App() {
         
         <ul>
         
-          <li><a href='https://github.com/reeceap124' target='_blank'>Github</a></li>
-          <li><a href='https://www.reecepierson.com' target='_blank'>www.reecepierson.com</a></li>
-        <li><a href='https://www.linkedin.com/in/reecepierson/' target='_blank'>LinkedIn</a></li>
+          <li><a href='https://github.com/reeceap124' target='_blank' rel="noopener noreferrer">Github</a></li>
+          <li><a href='https://www.reecepierson.com' target='_blank' rel="noopener noreferrer">www.reecepierson.com</a></li>
+        <li><a href='https://www.linkedin.com/in/reecepierson/' target='_blank' rel="noopener noreferrer">LinkedIn</a></li>
         
         </ul>
         
