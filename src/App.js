@@ -60,9 +60,9 @@ function App() {
       <section className='rules'>
         <h1>Rules of the Game</h1>
         <ul>
-          <li>Any cell with fewer than two live neighbors dies (as if by isolation)</li>
+          <li>Any live cell with fewer than two live neighbors dies (as if by isolation), or with four or more neighbors dies (as if by over population)</li>
           <li className='second'>Any cell with two or three living neighbors survives to the next generation</li>
-          <li className='third'>Any cell with four or more neighbors dies (as if by over population)</li>
+          <li className='third'>Any dead cell with exactly three living neighbors will be resurrected</li>
         </ul>
       </section>
       <footer>
@@ -72,9 +72,9 @@ function App() {
         
         <ul>
         
-          <li><a href='https://github.com/reeceap124'>Github</a></li>
-          <li><a href='https://www.reecepierson.com'>www.reecepierson.com</a></li>
-        <li><a href='https://www.linkedin.com/in/reecepierson/'>LinkedIn</a></li>
+          <li><a href='https://github.com/reeceap124' target='_blank'>Github</a></li>
+          <li><a href='https://www.reecepierson.com' target='_blank'>www.reecepierson.com</a></li>
+        <li><a href='https://www.linkedin.com/in/reecepierson/' target='_blank'>LinkedIn</a></li>
         
         </ul>
         
